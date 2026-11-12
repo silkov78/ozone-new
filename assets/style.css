@@ -300,3 +300,9 @@ button.chip{font-family:inherit;cursor:pointer;color:var(--ink)}
 .obs-card .rows{display:grid;grid-template-columns:1fr 1fr;column-gap:20px}
 .big-chart .chart-box{height:min(360px,40vh)}
 .obs-card .row b{white-space:nowrap}
+
+.hero-grid{align-items:start}
+.hero-grid .station.main{height:auto}
+.hero-side .side-link{margin-top:4px}
+.hero-note{margin-top:20px;padding-top:0;border-top:0;max-width:760px}
+.hero-side{gap:14px;padding:16px}.vseg button{padding:7px 12px}.hero-side .side-link{padding-top:12px}
