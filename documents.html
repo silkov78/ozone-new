@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Документы — ННИЦ МО БГУ</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="assets/img/brand/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/brand/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/img/brand/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/img/brand/favicon-180.png">
+<link rel="manifest" href="assets/img/brand/site.webmanifest">
+<meta name="theme-color" content="#1e4356">
+<link rel="stylesheet" href="assets/style.css?v=6">
+</head><body>
+<div id="header"></div><script src="assets/layout.js?v=6"></script>
+<section><div class="container" style="max-width:860px">
+  <h1 style="margin-bottom:32px">Документы</h1>
+  <div class="doc-list" id="docs"></div>
+</div></section>
+<div id="footer"></div>
+<script>
+const docs = [["Положение о центре","PDF","Устав и положение о ННИЦ МО БГУ"],["Методика измерения ОСО","PDF","Утверждена 2019"],["Форма заявки на данные","DOCX","Для запросов от организаций"],["Отчёт о деятельности 2025","PDF","4.2 МБ"]];
+document.getElementById("docs").innerHTML = docs.map(([t,e,s]) => `<a class="doc" href="#"><span class="ext">${e}</span><span class="t">${t}<small>${s}</small></span><span>↓</span></a>`).join("");
+</script>
+</body></html>

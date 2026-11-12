@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Сотрудник — ННИЦ МО БГУ</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="assets/img/brand/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/brand/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/img/brand/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/img/brand/favicon-180.png">
+<link rel="manifest" href="assets/img/brand/site.webmanifest">
+<meta name="theme-color" content="#1e4356">
+<link rel="stylesheet" href="assets/style.css?v=6">
+</head><body>
+<div id="header"></div><script src="assets/layout.js?v=6"></script>
+<section><div class="container" id="p"></div></section>
+<div id="footer"></div>
+<script>
+const w = WORKERS.find(x => x.id === +new URLSearchParams(location.search).get("id")) || WORKERS[0];
+const fio = `${w.last_name} ${w.first_name} ${w.middle_name}`;
+document.title = fio + " — ННИЦ МО БГУ";
+const tl = (items, y, t) => items?.length ? `<div class="timeline">${items.map(i => `<div><b>${i[y]}</b> ${i[t]}</div>`).join("")}</div>` : "";
+const blk = (title, html) => html ? `<div class="block"><h2>${title}</h2>${html}</div>` : "";
+document.getElementById("p").innerHTML = `
+<a class="back" href="about.html#team">← Все сотрудники</a>
+<div class="profile">
+  <div class="ph"><img src="${w.photo}" alt=""></div>
+  <div>
+    <span class="eyebrow">${w.position}</span>
+    <h1 style="margin:6px 0 4px">${fio}</h1>
+    ${w.academic_rank ? `<p class="muted">${w.academic_rank}</p>` : ""}
+    <div class="contacts">
+      ${w.mail ? `<div><span>Email</span><a href="mailto:${w.mail}">${w.mail}</a></div>` : ""}
+      ${w.phone ? `<div><span>Телефон</span>${w.phone}</div>` : ""}
+      ${w.adress ? `<div><span>Кабинет</span>${w.adress}</div>` : ""}
+      ${w.google_academy ? `<div><span>Профиль</span><a href="${w.google_academy}" target="_blank" rel="noopener">Google Scholar ↗</a></div>` : ""}
+    </div>
+    ${blk("Научные интересы", w.interests?.length && `<div class="chips">${w.interests.map(i => `<span class="chip">${i}</span>`).join("")}</div>`)}
+    ${blk("Образование", tl(w.education, "study_finishing", "study_description"))}
+    ${blk("Карьера", tl(w.career, "career_period", "career_description"))}
+    ${blk("Награды", tl(w.rewards, "reward_year", "reward_description"))}
+    ${blk("Публикации", w.publications?.length && `<ul class="pubs">${w.publications.map(p => `<li><b>${p.publication_year}</b>${p.publication_description}${p.publication_link ? ` <a href="${p.publication_link}" target="_blank" rel="noopener">ссылка ↗</a>` : ""}</li>`).join("")}</ul>`)}
+  </div>
+</div>`;
+</script>
+</body></html>

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Новость — ННИЦ МО БГУ</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="assets/img/brand/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/brand/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/img/brand/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/img/brand/favicon-180.png">
+<link rel="manifest" href="assets/img/brand/site.webmanifest">
+<meta name="theme-color" content="#1e4356">
+<link rel="stylesheet" href="assets/style.css?v=6">
+</head><body>
+<div id="header"></div><script src="assets/layout.js?v=6"></script>
+<section><div class="container"><article class="article" id="a"></article></div></section>
+<section class="section-soft"><div class="container">
+  <div class="section-head"><h2>Другие новости</h2><a href="news.html">Все новости →</a></div>
+  <div class="news-list" id="more"></div>
+</div></section>
+<div id="footer"></div>
+<script>
+const id = +new URLSearchParams(location.search).get("id") || NEWS[0].id;
+const n = NEWS.find(x => x.id === id) || NEWS[0];
+document.title = n.title + " — ННИЦ МО БГУ";
+document.getElementById("a").innerHTML = `
+  <a class="back" href="news.html">← Все новости</a>
+  <p class="muted">${fmtDate(n.published)}</p>
+  <h1>${n.title}</h1>
+  <div class="cover"><img src="${n.image_logo}" alt=""></div>
+  <div class="prose">${n.body}</div>
+  ${n.source_url ? `<a class="source" href="${n.source_url}" target="_blank" rel="noopener">
+    <span class="ico">↗</span>
+    <span class="meta"><small>Оригинальный источник</small><b>${domain(n.source_url)}</b></span>
+    <span class="btn btn-ghost">Читать оригинал</span></a>` : ""}`;
+document.getElementById("more").innerHTML = NEWS.filter(x => x.id !== n.id).slice(0, 3).map(x => newsCard(x)).join("");
+</script>
+</body></html>

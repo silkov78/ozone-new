@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>О центре — ННИЦ МО БГУ</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="assets/img/brand/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/brand/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/img/brand/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/img/brand/favicon-180.png">
+<link rel="manifest" href="assets/img/brand/site.webmanifest">
+<meta name="theme-color" content="#1e4356">
+<link rel="stylesheet" href="assets/style.css?v=6">
+<style>section[id]{scroll-margin-top:120px}</style>
+</head><body>
+<div id="header"></div><script src="assets/layout.js?v=6"></script>
+<nav class="subnav"><div class="container">
+  <a href="#info">Общая информация</a><a href="#units">Подразделения</a><a href="#team">Сотрудники</a><a href="#devices">Приборная база</a><a href="#science">Научная деятельность</a><a href="#reports">Годовые отчёты</a>
+</div></nav>
+
+<section id="info"><div class="container split">
+  <div><h1 style="margin-bottom:16px">О центре</h1>
+    <p class="muted">Национальный научно-исследовательский центр мониторинга озоносферы — структурное подразделение <a href="https://bsu.by">Белорусского государственного университета</a>. Центр обеспечивает наблюдения за состоянием озонового слоя, УФ-излучения и приземного озона в Беларуси, разрабатывает измерительные приборы и участвует в международных программах ВМО.</p>
+    <div class="stats"><div><b>1997</b><span>год основания</span></div><div><b>3</b><span>станции</span></div><div><b>20+</b><span>сотрудников</span></div></div></div>
+  <img class="photo" src="assets/img/building.jpg" alt="Здание ННИЦ МО БГУ">
+</div></section>
+
+<section id="units"><div class="container">
+  <h2>Подразделения</h2><div class="units" id="units-list"></div>
+</div></section>
+
+<section id="team" class="section-soft"><div class="container">
+  <div class="section-head"><h2>Сотрудники <span class="muted" id="cnt" style="font-size:16px;font-weight:600"></span></h2>
+    <input class="search" id="q" type="search" placeholder="Поиск по ФИО или должности"></div>
+  <div id="people"></div>
+</div></section>
+
+<section id="devices"><div class="container">
+  <h2>Приборная база</h2><div class="devices" id="dev"></div>
+</div></section>
+
+<section id="science" class="section-soft"><div class="container">
+  <div class="section-head"><h2>Научная деятельность</h2></div>
+  <div class="doc-list" id="sci"></div>
+</div></section>
+
+<section id="reports"><div class="container">
+  <h2>Годовые отчёты</h2><div class="doc-list" id="rep"></div>
+</div></section>
+<div id="footer"></div>
+<script>
+document.getElementById("units-list").innerHTML = DEPARTMENTS.map((d, i) => `<div class="unit"><span>${String(i + 1).padStart(2, "0")}</span>${d}</div>`).join("");
+function renderPeople() {
+  const q = document.getElementById("q").value.toLowerCase();
+  const ws = WORKERS.filter(w => `${w.last_name} ${w.first_name} ${w.middle_name} ${w.position}`.toLowerCase().includes(q));
+  document.getElementById("cnt").textContent = ws.length;
+  document.getElementById("people").innerHTML = ws.length ? `<div class="staff">${ws.map(w => `<a class="staff-item" href="team-member.html?id=${w.id}">
+    <img src="${w.photo}" alt="" loading="lazy"><span><b>${w.last_name} ${w.first_name} ${w.middle_name}</b>
+    <small>${w.position}${w.academic_rank ? " · " + w.academic_rank : ""}</small></span></a>`).join("")}</div>` : `<p class="muted">Никого не найдено</p>`;
+}
+document.getElementById("q").oninput = renderPeople;
+renderPeople();
+const D = ["ПИО-2|Спектрофотометр общего озона","УФ-радиометр|Измерение УФ-индекса","Озонометр приземный|Концентрация O₃ у поверхности"];
+document.getElementById("dev").innerHTML = D.map(d => { const [n,s] = d.split("|");
+  return `<a class="card" href="#"><div class="thumb"><img src="https://images.unsplash.com/photo-1581093588401-fbb62a02f120?w=800" alt=""></div><div class="body"><h3>${n}</h3><p>${s}</p></div></a>`; }).join("");
+const doc = (t, s, e) => `<a class="doc" href="#"><span class="ext">${e}</span><span class="t">${t}<small>${s}</small></span><span>↓</span></a>`;
+document.getElementById("sci").innerHTML = ["Мониторинг озонового слоя в рамках ГПНИ","Разработка УФ-радиометра нового поколения"].map(t => doc(t,"Статья · 2025","PDF")).join("");
+document.getElementById("rep").innerHTML = [2025,2024,2023].map(y => doc("Годовой отчёт за "+y, "PDF, 4.2 МБ", "PDF")).join("");
+</script>
+</body></html>

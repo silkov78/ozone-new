@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ННИЦ МО БГУ — главная</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="assets/img/brand/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/brand/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/img/brand/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/img/brand/favicon-180.png">
+<link rel="manifest" href="assets/img/brand/site.webmanifest">
+<meta name="theme-color" content="#1e4356">
+<link rel="stylesheet" href="assets/style.css?v=6">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head><body>
+<div id="header"></div><script src="assets/layout.js?v=6"></script>
+
+<section class="hero" id="hero"><div class="container">
+  <h1>Озоновый слой и УФ-излучение над Беларусью</h1>
+  <p>Ежедневные наземные наблюдения общего содержания озона и УФ-индекса на трёх станциях.</p>
+  <div class="hero-ctrl">
+    <div class="seg dark" id="hp"><button data-p="total_uvi" class="on">УФ-индекс</button><button data-p="total_ozone">Общий озон</button><button data-p="max_uvi">УФ-макс</button><button data-p="surface_ozone">Приземный озон</button></div>
+    <div class="seg dark" id="hd"><button data-d="7">7 дн</button><button data-d="30" class="on">30 дн</button><button data-d="90">90 дн</button></div>
+  </div>
+  <div class="today" id="today"></div>
+  <div class="hero-actions"><a class="btn btn-light" href="observations.html">Графики и выгрузка данных →</a></div>
+</div></section>
+
+<section><div class="container">
+  <div class="section-head"><h2>Новости</h2><a href="news.html">Все новости →</a></div>
+  <div class="news-grid" id="news"></div>
+</div></section>
+
+<section class="section-soft"><div class="container split">
+  <div>
+    <span class="eyebrow">О центре · БГУ</span>
+    <h2 style="margin-top:8px">Национальный научно-исследовательский центр мониторинга озоносферы</h2>
+    <p class="muted">Центр — структурное подразделение Белорусского государственного университета. Ведёт мониторинг озонового слоя и ультрафиолетового излучения, разрабатывает приборы и методики измерений, участвует в международных программах.</p>
+    <div class="stats"><div><b>1997</b><span>год основания</span></div><div><b>3</b><span>станции</span></div><div><b>25+</b><span>лет рядов данных</span></div></div>
+    <p style="margin-top:24px"><a class="btn btn-ghost" href="about.html">Подробнее о центре</a></p>
+  </div>
+  <img class="photo" src="assets/img/building.jpg" alt="Здание ННИЦ МО БГУ">
+</div></section>
+
+<div id="footer"></div>
+<script>
+const last = OBS[OBS.length - 1];
+const st = [["minsk","Минск"],["homel","Гомель"],["naroch","Нарочь"]];
+const PU = { total_ozone: ["ОСО", "е.Д."], total_uvi: ["УФ-индекс", ""], max_uvi: ["УФ-макс", ""], surface_ozone: ["Приземный озон", "мг/м³"] };
+let hp = "total_uvi", hd = 30, sparks = [];
+function renderToday() {
+  const rows = OBS.slice(-hd), sts = st.filter(([k]) => (hp + "_" + k) in last);
+  sparks.forEach(c => c.destroy()); sparks = [];
+  document.getElementById("today").innerHTML = sts.map(([k, n]) => {
+    const v = last[hp + "_" + k], vals = rows.map(o => o[hp + "_" + k]);
+    const avg = (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(hp === "total_ozone" ? 0 : 2);
+    const badge = hp.includes("uvi") ? (([c, l]) => ` <i class="uvi-badge ${c}">${l}</i>`)(uviClass(v)) : "";
+    return `<div class="station"><h3>${n}</h3><div class="vals">
+      <div class="val"><b>${v}</b><span>${PU[hp][0]} ${PU[hp][1]}${badge}</span></div>
+      <div class="val"><b style="font-size:22px;opacity:.75">${avg}</b><span>среднее за ${hd} дн</span></div>
+    </div><div class="spark"><canvas id="sp-${k}"></canvas></div></div>`;
+  }).join("");
+  sts.forEach(([k]) => sparks.push(new Chart(document.getElementById("sp-" + k), {
+    type: "line", data: { labels: rows.map(o => o.date), datasets: [{ data: rows.map(o => o[hp + "_" + k]), borderColor: "#a2cce3", borderWidth: 2, pointRadius: 0, tension: .35, fill: { target: "origin" }, backgroundColor: "rgba(162,204,227,.12)" }] },
+    options: { responsive: true, maintainAspectRatio: false, animation: { duration: 300 }, plugins: { legend: { display: false }, tooltip: { enabled: true, displayColors: false } }, scales: { x: { display: false }, y: { display: false } } }
+  })));
+}
+document.querySelectorAll("#hp button").forEach(b => b.onclick = () => { hp = b.dataset.p; document.querySelectorAll("#hp button").forEach(x => x.classList.toggle("on", x === b)); renderToday(); });
+document.querySelectorAll("#hd button").forEach(b => b.onclick = () => { hd = +b.dataset.d; document.querySelectorAll("#hd button").forEach(x => x.classList.toggle("on", x === b)); renderToday(); });
+renderToday();
+document.getElementById("news").innerHTML = newsCard(NEWS[0], "big") +
+  `<div class="news-side">${NEWS.slice(1,3).map(n => newsCard(n, "row")).join("")}</div>`;
+</script>
+</body></html>

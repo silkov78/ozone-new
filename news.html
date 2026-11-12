@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Новости — ННИЦ МО БГУ</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="assets/img/brand/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/brand/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/img/brand/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/img/brand/favicon-180.png">
+<link rel="manifest" href="assets/img/brand/site.webmanifest">
+<meta name="theme-color" content="#1e4356">
+<link rel="stylesheet" href="assets/style.css?v=6">
+</head><body>
+<div id="header"></div><script src="assets/layout.js?v=6"></script>
+<section><div class="container">
+  <h1 style="margin-bottom:32px">Новости</h1>
+  <div class="news-list" id="list"></div>
+  <div class="pager"><a class="active" href="#">1</a><a href="#">2</a><a href="#">3</a><a href="#">→</a></div>
+</div></section>
+<div id="footer"></div>
+<script>document.getElementById("list").innerHTML = NEWS.map(n => newsCard(n)).join("");</script>
+</body></html>
