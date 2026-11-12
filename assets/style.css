@@ -331,3 +331,70 @@ button.chip{font-family:inherit;cursor:pointer;color:var(--ink)}
 .obs-cards .obs-card h3{margin-bottom:10px}
 .obs-cards .obs-card .row{padding:10px 0;font-size:15px}
 .obs-cards .obs-card .row b{font-size:17px}
+/* чтобы на первом экране был виден начало блока «Что мы измеряем» */
+.big-chart .chart-box{height:min(280px,32vh)}
+#download{padding:20px 0!important}
+#download + section{padding-top:32px}
+.big-chart{padding:18px 24px}
+.big-chart .chart-box{height:min(250px,28vh)}
+.big-chart .export{margin-top:14px;padding-top:12px}
+.big-chart .chart-ctrl{margin-top:12px}
+.big-chart .chart-box{height:min(300px,32vh)}
+
+/* наблюдения: график + карточка выбранного города */
+.obs-main{display:grid;grid-template-columns:1fr 280px;gap:20px;align-items:start}
+.city-card{padding:22px 22px}
+.city-card h3{font-size:26px;color:var(--ink);margin:6px 0 0}
+.city-card .asof{display:block;margin:2px 0 12px}
+.city-card .row{padding:11px 0;font-size:15px}
+.city-card .row b{font-size:18px}
+@media(max-width:960px){.obs-main{grid-template-columns:1fr}}
+.obs-main .big-chart .chart-box{height:max(300px,calc(100vh - 540px))}
+
+.obs-side{display:grid;gap:16px}
+.dl-card{display:grid;gap:10px;padding:18px 22px}
+.dl-card .field input{width:100%;min-width:0}
+.dl-btns{display:flex;gap:8px}
+.dl-btns .btn{flex:1;justify-content:center;padding:10px 12px}
+.dl-card small{font-size:12px}
+
+.city-card{padding:18px 22px}
+.city-card h3{font-size:22px}
+.city-card .asof{margin-bottom:6px}
+.city-card .row{padding:8px 0}
+.dl-card{padding:16px 22px;gap:8px}
+.dl-dates{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dl-dates .field input{padding:8px 8px;font-size:13px}
+/* график тянется по высоте правой колонки */
+.obs-main{align-items:stretch}
+.obs-main .big-chart{display:flex;flex-direction:column}
+.obs-main .big-chart .chart-box{flex:1;height:auto;min-height:300px}
+.obs-main{grid-template-columns:minmax(0,1fr) 280px}
+.dl-dates .field{min-width:0}
+.dl-dates .field input{min-width:0!important;width:100%}
+.obs-main .big-chart .chart-box{min-height:max(300px,calc(100vh - 560px))}
+/* компактная карточка города, «Скачать данные» по низу графика */
+.obs-side{display:flex;flex-direction:column;gap:16px}
+.obs-side .dl-card{margin-top:auto}
+/* блок «Скачать данные» крупнее */
+.obs-side .dl-card{flex:1;display:flex;flex-direction:column;justify-content:space-between;gap:10px;padding:18px 22px}
+.dl-card .eyebrow{font-size:13px}
+.dl-dates{grid-template-columns:1fr 1fr;gap:10px}
+.dl-dates .field{font-size:13px}
+.dl-dates .field input{padding:10px 6px;font-size:13px}
+.dl-btns .btn{padding:12px 14px;font-size:15px}
+.dl-card small{font-size:13px}
+/* нижний блок всегда до низа окна — футер только после прокрутки */
+#download{display:flex;flex-direction:column}
+#download>.container{flex:1;display:flex;flex-direction:column;width:100%}
+#download .obs-main{flex:1}
+.obs-side .dl-card{justify-content:center;gap:12px}
+.obs-side .dl-card .dl-dates{margin-top:0}
+/* «Последние данные» тянется, «Скачать данные» компактнее */
+.obs-side .city-card{flex:1;display:flex;flex-direction:column}
+.obs-side .city-card .row{flex:1;align-items:center;max-height:72px}
+.obs-side .dl-card{flex:none;gap:10px;padding:16px 20px}
+.dl-card .eyebrow{font-size:12px}
+.dl-dates .field input{padding:8px 6px}
+.dl-btns .btn{padding:10px 12px;font-size:14px}
+.dl-card small{font-size:12px}

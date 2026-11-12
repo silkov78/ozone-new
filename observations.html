@@ -6,17 +6,23 @@
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/brand/favicon-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/img/brand/favicon-180.png">
 <link rel="manifest" href="assets/img/brand/site.webmanifest">
-<link rel="stylesheet" href="assets/style.css?v=41">
+<link rel="stylesheet" href="assets/style.css?v=63">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head><body>
-<div id="header"></div><script src="assets/layout.js?v=41"></script>
+<div id="header"></div><script src="assets/layout.js?v=63"></script>
 
-<section style="padding:28px 0 12px"><div class="container">
-  <h1 style="margin:0 0 16px;font-size:32px">Наблюдения</h1>
-  <div class="obs-cards" id="cards"></div>
+<section class="section-soft" style="padding:28px 0"><div class="container">
+  <h2 style="font-size:18px;margin:0 0 12px">Что мы измеряем</h2>
+  <div class="info-grid">
+    <div class="obs-card"><h3>ОСО</h3><p>Общее содержание озона в столбе атмосферы, в единицах Добсона (е.Д.). Норма для Беларуси — 300–380 е.Д.</p></div>
+    <div class="obs-card"><h3>УФ-индекс</h3><p>Среднедневной индекс ультрафиолетового излучения. 0–2 низкий, 3–5 умеренный, 6+ высокий.</p></div>
+    <div class="obs-card"><h3>УФ-макс</h3><p>Максимальное за день значение УФ-индекса, обычно около полудня.</p></div>
+    <div class="obs-card"><h3>ПСО</h3><p>Приземный озон — концентрация озона у поверхности земли (только Минск).</p></div>
+  </div>
 </div></section>
 
-<section style="padding-top:12px" id="download"><div class="container">
+<section style="padding:28px 0" id="download"><div class="container">
+  <div class="obs-main">
   <div class="panel big-chart">
     <div class="chart-head">
       <h2 id="chart-title"></h2>
@@ -29,28 +35,21 @@
       <div class="seg" id="range">
         <button data-d="7" class="on">Неделя</button><button data-d="30">Месяц</button><button data-d="365">Год</button><button data-d="0">Всё время</button></div>
     </div>
-    <details class="export">
-      <summary>Скачать данные</summary>
-      <div class="filters">
-        <label class="field">С<input type="date" id="from"></label>
-        <label class="field">По<input type="date" id="to"></label>
-        <button class="btn btn-primary" id="csv">⬇ CSV</button>
-        <a class="btn btn-ghost" href="#">⬇ XLSX</a>
-        <span class="muted" style="font-size:14px">Все пункты и параметры за период</span>
-      </div>
-    </details>
+  </div>
+  <div class="obs-side">
+    <aside class="obs-card city-card" id="city-card"></aside>
+    <div class="obs-card dl-card">
+      <span class="eyebrow">Скачать данные</span>
+      <div class="dl-dates"><label class="field">С<input type="date" id="from"></label>
+      <label class="field">По<input type="date" id="to"></label></div>
+      <div class="dl-btns"><button class="btn btn-primary" id="csv">⬇ CSV</button><a class="btn btn-ghost" href="#">⬇ XLSX</a></div>
+      <small class="muted">Все пункты и параметры за период</small>
+    </div>
+  </div>
   </div>
 </div></section>
 
-<section class="section-soft"><div class="container">
-  <h2>Что мы измеряем</h2>
-  <div class="info-grid">
-    <div class="obs-card"><h3>ОСО</h3><p>Общее содержание озона в столбе атмосферы, в единицах Добсона (е.Д.). Норма для Беларуси — 300–380 е.Д.</p></div>
-    <div class="obs-card"><h3>УФ-индекс</h3><p>Среднедневной индекс ультрафиолетового излучения. 0–2 низкий, 3–5 умеренный, 6+ высокий.</p></div>
-    <div class="obs-card"><h3>УФ-макс</h3><p>Максимальное за день значение УФ-индекса, обычно около полудня.</p></div>
-    <div class="obs-card"><h3>ПСО</h3><p>Приземный озон — концентрация озона у поверхности земли (только Минск).</p></div>
-  </div>
-</div></section>
+
 
 <div id="footer"></div>
 <script>
@@ -59,16 +58,17 @@ const CITY = { minsk: "Минску", homel: "Гомелю", naroch: "Нароч
 const NAMES = { minsk: "Минск", homel: "Гомель", naroch: "Нарочь" };
 const PARAM = { total_ozone: "ОСО (е.Д.)", surface_ozone: "ПСО", total_uvi: "УФ-индекс", max_uvi: "УФ-макс" };
 
-// карточки: у каждого пункта своя дата последних данных
-$("cards").innerHTML = Object.keys(NAMES).map(k => {
-  const oz = lastOf("total_ozone_" + k), uv = lastOf("total_uvi_" + k), mx = lastOf("max_uvi_" + k), so = lastOf("surface_ozone_" + k);
+// карточка выбранного на графике города
+function renderCityCard() {
+  const k = city, oz = lastOf("total_ozone_" + k), uv = lastOf("total_uvi_" + k), mx = lastOf("max_uvi_" + k), so = lastOf("surface_ozone_" + k);
   const [c, l] = uviClass(uv.value);
-  return `<div class="obs-card"><h3>${NAMES[k]} <span class="asof">данные за ${shortDate(oz.date)}</span></h3>
-  <div class="rows"><div class="row"><span>ОСО</span><b>${oz.value} е.Д.</b></div>
-  <div class="row"><span>УФ</span><b>${uv.value} <i class="uvi-badge ${c}">${l}</i></b></div>
+  $("city-card").innerHTML = `<span class="eyebrow">Последние данные</span>
+  <h3>${NAMES[k]}</h3><span class="asof">за ${shortDate(oz.date)}</span>
+  <div class="row"><span>ОСО</span><b>${oz.value} е.Д.</b></div>
+  <div class="row"><span>УФ-индекс</span><b>${uv.value} <i class="uvi-badge ${c}">${l}</i></b></div>
   <div class="row"><span>УФ-макс</span><b>${mx.value}</b></div>
-  ${so ? `<div class="row"><span>ПСО</span><b>${so.value}</b></div>` : ""}</div></div>`;
-}).join("");
+  ${so ? `<div class="row"><span>ПСО</span><b>${so.value}</b></div>` : ""}`;
+}
 
 let city = "minsk", param = "total_ozone", days = 7, chart;
 const seg = (id, fn) => document.querySelectorAll(`#${id} button`).forEach(b => b.onclick = () => {
@@ -80,6 +80,7 @@ seg("param", d => param = d.p);
 seg("range", d => days = +d.d);
 
 function render() {
+  renderCityCard();
   // ПСО есть только у Минска
   document.querySelector('#param [data-p="surface_ozone"]').disabled = city !== "minsk";
   if (city !== "minsk" && param === "surface_ozone") { param = "total_ozone"; document.querySelectorAll("#param button").forEach(x => x.classList.toggle("on", x.dataset.p === param)); }
@@ -102,5 +103,8 @@ function render() {
 $("to").value = OBS[OBS.length - 1].date; $("from").value = OBS[OBS.length - 30].date;
 $("csv").onclick = () => downloadCSV(OBS.filter(r => r.date >= $("from").value && r.date <= $("to").value));
 render();
+// растянуть нижний блок до низа окна
+const fit = () => { const d = $("download"); d.style.minHeight = Math.max(0, innerHeight - d.getBoundingClientRect().top - scrollY + 16) + "px"; };
+addEventListener("resize", fit); fit();
 </script>
 </body></html>
