@@ -8,10 +8,10 @@
 <link rel="apple-touch-icon" sizes="180x180" href="assets/img/brand/favicon-180.png">
 <link rel="manifest" href="assets/img/brand/site.webmanifest">
 <meta name="theme-color" content="#1e4356">
-<link rel="stylesheet" href="assets/style.css?v=7">
+<link rel="stylesheet" href="assets/style.css?v=9">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head><body>
-<div id="header"></div><script src="assets/layout.js?v=7"></script>
+<div id="header"></div><script src="assets/layout.js?v=9"></script>
 
 <section class="hero" id="hero"><div class="container">
   <h1>Озоновый слой и УФ-излучение над Беларусью</h1>
@@ -58,9 +58,18 @@ function renderToday() {
       ${main ? `<div class="val"><b style="font-size:22px;opacity:.75">${avg}</b><span>среднее за ${hd} дн</span></div>` : ""}
     </div>${main ? `<div class="spark"><canvas id="sp-${k}" data-from="${lo.i}"></canvas></div>` : ""}</div>`;
   };
-  const others = st.slice(1).map(s => card(s, false)).join("");
-  document.getElementById("today").innerHTML = card(st[0], true) + (others ? `<div class="side">${others}</div>` : "");
-  document.getElementById("today").style.gridTemplateColumns = others ? "" : "1fr";
+  const g = lastOf("total_ozone_homel"), n = lastOf("total_ozone_naroch");
+  document.getElementById("today").innerHTML = card(st[0], true) + `
+  <aside class="summary">
+    <h3>Что мы измеряем</h3>
+    <p>Каждый день центр измеряет <b>общее содержание озона</b> в атмосфере (норма — 300–380 е.Д.) и <b>УФ-индекс</b> — силу солнечного ультрафиолета у земли. В Минске дополнительно — приземный озон.</p>
+    <ul class="stations">
+      <li><span class="dot live"></span><b>Минск</b><small>ежедневно · ${shortDate(lastOf(hp + "_minsk").date)}</small></li>
+      <li><span class="dot"></span><b>Гомель</b><small>раз в неделю · ${shortDate(g.date)}</small></li>
+      <li><span class="dot"></span><b>Нарочь</b><small>раз в неделю · ${shortDate(n.date)}</small></li>
+    </ul>
+    <a class="more" href="observations.html">Графики по всем станциям →</a>
+  </aside>`;
   const rows = OBS.slice(-hd), key = hp + "_minsk";
   sparks.push(new Chart(document.getElementById("sp-minsk"), {
     type: "line", data: { labels: rows.map(o => o.date), datasets: [{ data: rows.map(o => o[key]), borderColor: "#a2cce3", borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: .35, fill: { target: "origin" }, backgroundColor: "rgba(162,204,227,.12)" }] },
