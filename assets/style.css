@@ -459,3 +459,11 @@ section.section-soft h2{font-size:22px!important}
 #download{padding:20px 0 72px!important}
 #download .obs-side .city-card .row{max-height:none;flex:none;padding:12px 0}
 #download{padding-bottom:44px!important}
+
+/* мини-графики с осями */
+.today .station .spark{height:96px;margin-top:12px}
+
+/* приземный озон: Минск плавно на всю ширину */
+.today.solo{grid-template-columns:1fr}
+.today.solo .station .spark{height:150px}
+::view-transition-group(*){animation-duration:.45s;animation-timing-function:cubic-bezier(.2,.8,.2,1)}
