@@ -423,3 +423,39 @@ section.section-soft h2{font-size:22px!important}
 .obs-main .big-chart{padding:14px 22px}
 .obs-main .big-chart .chart-ctrl{margin-top:8px}
 .obs-main .big-chart .chart-box{min-height:240px}
+
+/* скачать данные — полоса под графиком; график ниже */
+#download,#download>.container,#download .obs-main{display:block}
+#download .obs-main{display:grid}
+#download{padding:20px 0 28px!important}
+.obs-main .big-chart .chart-box{flex:none;height:260px;min-height:0}
+.dl-bar{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-top:20px;padding:18px 22px}
+.dl-bar>div{flex:1;min-width:220px;display:grid;gap:4px}
+.dl-bar small{font-size:13px}
+.dl-bar .field input{min-width:160px}
+
+/* узкая полоса скачивания, график выше, карточка вровень с графиком */
+.dl-bar{align-items:center;gap:12px;padding:10px 18px;margin-top:16px}
+.dl-bar .eyebrow{margin-right:auto;font-size:12px}
+.dl-bar .inline{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);font-weight:600}
+.dl-bar .inline input{font:inherit;font-size:13px;color:var(--ink);padding:6px 8px;border:1px solid var(--line);border-radius:8px}
+.dl-bar .btn{padding:7px 14px;font-size:13px}
+.obs-main .big-chart .chart-box{height:340px}
+#download .obs-main{align-items:stretch}
+#download .obs-side{display:flex;flex-direction:column}
+#download .obs-side .city-card{flex:1}
+
+/* скачать данные — справа под карточкой */
+#download .obs-side{gap:12px}
+#download .obs-side .dl-card{flex:none;margin:0;display:flex;flex-direction:column;gap:8px;padding:14px 18px;justify-content:flex-start}
+#download .obs-side .dl-card .dl-dates{margin:0}
+
+/* футер — только после прокрутки: блок тянется до низа окна, график растёт */
+#download{display:flex!important;flex-direction:column}
+#download>.container{flex:1;display:flex!important;flex-direction:column;width:100%}
+#download .obs-main{flex:1}
+.obs-main .big-chart .chart-box{flex:1;height:auto;min-height:320px}
+/* больше воздуха под графиком (график за счёт этого ниже), строки «Последних данных» свободнее */
+#download{padding:20px 0 72px!important}
+#download .obs-side .city-card .row{max-height:none;flex:none;padding:12px 0}
+#download{padding-bottom:44px!important}

@@ -6,10 +6,10 @@
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/brand/favicon-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/img/brand/favicon-180.png">
 <link rel="manifest" href="assets/img/brand/site.webmanifest">
-<link rel="stylesheet" href="assets/style.css?v=67">
+<link rel="stylesheet" href="assets/style.css?v=74">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head><body>
-<div id="header"></div><script src="assets/layout.js?v=67"></script>
+<div id="header"></div><script src="assets/layout.js?v=74"></script>
 
 <section class="section-soft" style="padding:28px 0"><div class="container">
   <h2 style="font-size:18px;margin:0 0 12px">Что мы измеряем</h2>
@@ -40,10 +40,8 @@
     <aside class="obs-card city-card" id="city-card"></aside>
     <div class="obs-card dl-card">
       <span class="eyebrow">Скачать данные</span>
-      <div class="dl-dates"><label class="field">С<input type="date" id="from"></label>
-      <label class="field">По<input type="date" id="to"></label></div>
+      <div class="dl-dates"><label class="field">С<input type="date" id="from"></label><label class="field">По<input type="date" id="to"></label></div>
       <div class="dl-btns"><button class="btn btn-primary" id="csv">⬇ CSV</button><a class="btn btn-ghost" href="#">⬇ XLSX</a></div>
-      <small class="muted">Все пункты и параметры за период</small>
     </div>
   </div>
   </div>
@@ -103,7 +101,7 @@ function render() {
 $("to").value = OBS[OBS.length - 1].date; $("from").value = OBS[OBS.length - 30].date;
 $("csv").onclick = () => downloadCSV(OBS.filter(r => r.date >= $("from").value && r.date <= $("to").value));
 render();
-// растянуть нижний блок до низа окна
+// растянуть нижний блок до низа окна — футер только после прокрутки
 const fit = () => { const d = $("download"); d.style.minHeight = Math.max(0, innerHeight - d.getBoundingClientRect().top - scrollY + 16) + "px"; };
 addEventListener("resize", fit); addEventListener("load", fit); document.fonts?.ready.then(fit); fit();
 </script>
