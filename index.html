@@ -8,10 +8,10 @@
 <link rel="apple-touch-icon" sizes="180x180" href="assets/img/brand/favicon-180.png">
 <link rel="manifest" href="assets/img/brand/site.webmanifest">
 <meta name="theme-color" content="#1e4356">
-<link rel="stylesheet" href="assets/style.css?v=79">
+<link rel="stylesheet" href="assets/style.css?v=82">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head><body>
-<div id="header"></div><script src="assets/layout.js?v=79"></script>
+<div id="header"></div><script src="assets/layout.js?v=82"></script>
 
 <section class="hero" id="hero"><div class="container">
   <h1>Озоновый слой и УФ-излучение над Беларусью</h1>
@@ -45,6 +45,17 @@
 const last = OBS[OBS.length - 1];
 const st = [["minsk","Минск"],["homel","Гомель"],["naroch","Нарочь"]];
 const PU = { total_ozone: ["ОСО", "е.Д."], total_uvi: ["УФ-индекс", ""], max_uvi: ["УФ-макс", ""], surface_ozone: ["Приземный озон", "мг/м³"] };
+// аккуратная прорисовка линии слева направо
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const drawIn = { id: "drawIn",
+  beforeDatasetsDraw(c) {
+    if (REDUCED) return;
+    c.$t0 ??= performance.now();
+    const t = Math.min(1, (performance.now() - c.$t0) / 2200), p = Math.sin(t * Math.PI / 2), a = c.chartArea;
+    c.ctx.save(); c.ctx.beginPath(); c.ctx.rect(a.left - 2, a.top - 10, (a.right - a.left + 4) * p, a.bottom - a.top + 20); c.ctx.clip();
+    if (t < 1) requestAnimationFrame(() => c.draw());
+  },
+  afterDatasetsDraw(c) { if (!REDUCED) c.ctx.restore(); } };
 let hp = "total_uvi", hd = 30, sparks = [];
 function renderToday() {
   const rows = OBS.slice(-hd), sts = st.filter(([k]) => (hp + "_" + k) in last);
@@ -62,7 +73,7 @@ function renderToday() {
   box.classList.toggle("solo", sts.length === 1);
   sts.forEach(([k]) => { const lo = lastOf(hp + "_" + k), cr = OBS.slice(0, lo.i + 1).slice(-hd); sparks.push(new Chart(document.getElementById("sp-" + k), {
     type: "line", data: { labels: cr.map(o => o.date), datasets: [{ data: cr.map(o => o[hp + "_" + k]), borderColor: "#a2cce3", borderWidth: 2, pointRadius: 0, tension: .35, fill: { target: "origin" }, backgroundColor: "rgba(162,204,227,.12)" }] },
-    options: { responsive: true, maintainAspectRatio: false, animation: { duration: 300 }, plugins: { legend: { display: false }, tooltip: { enabled: true, displayColors: false } }, scales: {
+    plugins: [drawIn], options: { responsive: true, maintainAspectRatio: false, animation: false, plugins: { legend: { display: false }, tooltip: { enabled: true, displayColors: false } }, scales: {
       x: { grid: { display: false }, border: { color: "rgba(255,255,255,.18)" }, ticks: { color: "rgba(207,227,238,.7)", font: { size: 10 }, maxRotation: 0, autoSkip: false, align: "inner", callback: function (v, i, t) { const m = Math.round((t.length - 1) / 2); return i === 0 || i === m || i === t.length - 1 ? shortDate(this.getLabelForValue(v)) : ""; } } },
       y: { position: "left", grid: { color: "rgba(255,255,255,.06)", drawTicks: false }, border: { display: false }, ticks: { color: "rgba(207,227,238,.7)", font: { size: 10 }, maxTicksLimit: 3, padding: 6 } } } }
   })); });
