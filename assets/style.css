@@ -269,3 +269,34 @@ button.chip{font-family:inherit;cursor:pointer;color:var(--ink)}
 .station .asof{color:#a9c4d3;margin:0;font-size:12px;font-weight:600}
 .station h3{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 @media(max-width:860px){.today{grid-template-columns:1fr}}
+
+/* hero v3: широкий график Минска + параметры справа */
+.hero-grid{display:grid;grid-template-columns:1fr 220px;gap:16px;margin-top:32px;align-items:stretch}
+.hero-grid .station.main{height:100%}
+.station.main .spark{height:220px;flex:none}
+.hero-note{margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.12);font-size:15px;line-height:1.6;color:#cfe3ee}
+.hero-note b{color:#fff}
+.hero-side{display:flex;flex-direction:column;gap:20px;background:rgba(8,26,38,.45);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.14);border-radius:var(--radius);padding:20px}
+.side-label{display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--sky);margin-bottom:8px}
+.vseg{display:flex;flex-direction:column;gap:4px}
+.vseg.row{flex-direction:row}
+.vseg button{font:inherit;font-size:14px;font-weight:600;text-align:left;padding:9px 12px;border-radius:10px;border:0;background:transparent;color:#cfe3ee;cursor:pointer}
+.vseg.row button{flex:1;text-align:center;padding:9px 6px}
+.vseg button:hover{background:rgba(255,255,255,.08)}
+.vseg button.on{background:#fff;color:var(--ink)}
+@media(max-width:860px){.hero-grid{grid-template-columns:1fr}.hero-side{order:-1}.vseg{flex-direction:row;flex-wrap:wrap}}
+
+/* наблюдения: компактнее */
+.obs-card{padding:14px 18px}
+.obs-card h3{margin-bottom:4px}
+.obs-card .row{padding:5px 0;font-size:14px}
+.obs-card .row b{font-size:15px}
+.big-chart{padding:20px 24px}
+.big-chart .chart-box{height:min(400px,48vh)}
+.chart-head h2{font-size:22px}
+
+.side-link{margin-top:auto;color:#fff;font-weight:700;font-size:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.12)}
+.hero{padding-bottom:64px}
+.obs-card .rows{display:grid;grid-template-columns:1fr 1fr;column-gap:20px}
+.big-chart .chart-box{height:min(360px,40vh)}
+.obs-card .row b{white-space:nowrap}

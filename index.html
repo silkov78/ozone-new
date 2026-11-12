@@ -8,20 +8,24 @@
 <link rel="apple-touch-icon" sizes="180x180" href="assets/img/brand/favicon-180.png">
 <link rel="manifest" href="assets/img/brand/site.webmanifest">
 <meta name="theme-color" content="#1e4356">
-<link rel="stylesheet" href="assets/style.css?v=10">
+<link rel="stylesheet" href="assets/style.css?v=12">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head><body>
-<div id="header"></div><script src="assets/layout.js?v=10"></script>
+<div id="header"></div><script src="assets/layout.js?v=12"></script>
 
 <section class="hero" id="hero"><div class="container">
   <h1>Озоновый слой и УФ-излучение над Беларусью</h1>
   <p>Ежедневные наземные наблюдения общего содержания озона и УФ-индекса на трёх станциях.</p>
-  <div class="hero-ctrl">
-    <div class="seg dark" id="hp"><button data-p="total_uvi" class="on">УФ-индекс</button><button data-p="total_ozone">Общий озон</button><button data-p="max_uvi">УФ-макс</button><button data-p="surface_ozone">Приземный озон</button></div>
-    <div class="seg dark" id="hd"><button data-d="7">7 дн</button><button data-d="30" class="on">30 дн</button><button data-d="90">90 дн</button></div>
+  <div class="hero-grid">
+    <div id="today"></div>
+    <aside class="hero-side">
+      <div class="side-group"><span class="side-label">Параметр</span>
+        <div class="vseg" id="hp"><button data-p="total_uvi" class="on">УФ-индекс</button><button data-p="total_ozone">Общий озон</button><button data-p="max_uvi">УФ-макс</button><button data-p="surface_ozone">Приземный озон</button></div></div>
+      <div class="side-group"><span class="side-label">Период</span>
+        <div class="vseg row" id="hd"><button data-d="7">7 дн</button><button data-d="30" class="on">30 дн</button><button data-d="90">90 дн</button></div></div>
+      <a class="side-link" href="observations.html">Все станции и выгрузка →</a>
+    </aside>
   </div>
-  <div class="today" id="today"></div>
-  <div class="hero-actions"><a class="btn btn-light" href="observations.html">Графики и выгрузка данных →</a></div>
 </div></section>
 
 <section><div class="container">
@@ -53,14 +57,13 @@ function renderToday() {
     const rows = OBS.slice(0, lo.i + 1).slice(-hd), vals = rows.map(o => o[hp + "_" + k]).filter(v => v != null);
     const avg = (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(hp === "total_ozone" ? 0 : 2);
     const badge = hp.includes("uvi") ? (([c, l]) => ` <i class="uvi-badge ${c}">${l}</i>`)(uviClass(lo.value)) : "";
-    return `<div class="station ${main ? "main" : "mini"}"><h3>${n}<span class="asof">данные за ${shortDate(lo.date)}</span></h3><div class="vals">
+    return `<div class="station ${main ? "main" : "mini"}"><h3>${n}</h3><div class="vals">
       <div class="val"><b>${lo.value}</b><span>${PU[hp][0]} ${PU[hp][1]}${badge}</span></div>
       ${main ? `<div class="val"><b style="font-size:22px;opacity:.75">${avg}</b><span>среднее за ${hd} дн</span></div>` : ""}
-    </div>${main ? `<div class="spark"><canvas id="sp-${k}" data-from="${lo.i}"></canvas></div>` : ""}</div>`;
+    </div>${main ? `<div class="spark"><canvas id="sp-${k}" data-from="${lo.i}"></canvas></div>
+      <p class="hero-note">Каждый день центр измеряет <b>общее содержание озона</b> в атмосфере (норма — 300–380 е.Д.) и <b>УФ-индекс</b> — силу солнечного ультрафиолета у земли. В Минске дополнительно — приземный озон.</p>` : ""}</div>`;
   };
-  const others = st.slice(1).map(s => card(s, false)).join("");
-  document.getElementById("today").innerHTML = card(st[0], true) + (others ? `<div class="side">${others}</div>` : "");
-  document.getElementById("today").style.gridTemplateColumns = others ? "" : "1fr";
+  document.getElementById("today").innerHTML = card(st[0], true);
   const rows = OBS.slice(-hd), key = hp + "_minsk";
   sparks.push(new Chart(document.getElementById("sp-minsk"), {
     type: "line", data: { labels: rows.map(o => o.date), datasets: [{ data: rows.map(o => o[key]), borderColor: "#a2cce3", borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: .35, fill: { target: "origin" }, backgroundColor: "rgba(162,204,227,.12)" }] },

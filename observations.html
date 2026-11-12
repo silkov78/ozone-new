@@ -6,17 +6,17 @@
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/brand/favicon-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/img/brand/favicon-180.png">
 <link rel="manifest" href="assets/img/brand/site.webmanifest">
-<link rel="stylesheet" href="assets/style.css?v=10">
+<link rel="stylesheet" href="assets/style.css?v=12">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head><body>
-<div id="header"></div><script src="assets/layout.js?v=10"></script>
+<div id="header"></div><script src="assets/layout.js?v=12"></script>
 
-<section style="padding-bottom:24px"><div class="container">
-  <h1 style="margin:8px 0 24px">Наблюдения</h1>
+<section style="padding:28px 0 12px"><div class="container">
+  <h1 style="margin:0 0 16px;font-size:32px">Наблюдения</h1>
   <div class="obs-cards" id="cards"></div>
 </div></section>
 
-<section style="padding-top:24px" id="download"><div class="container">
+<section style="padding-top:12px" id="download"><div class="container">
   <div class="panel big-chart">
     <div class="chart-head">
       <h2 id="chart-title"></h2>
@@ -64,10 +64,10 @@ $("cards").innerHTML = Object.keys(NAMES).map(k => {
   const oz = lastOf("total_ozone_" + k), uv = lastOf("total_uvi_" + k), mx = lastOf("max_uvi_" + k), so = lastOf("surface_ozone_" + k);
   const [c, l] = uviClass(uv.value);
   return `<div class="obs-card"><h3>${NAMES[k]} <span class="asof">данные за ${shortDate(oz.date)}</span></h3>
-  <div class="row"><span>ОСО</span><b>${oz.value} е.Д.</b></div>
-  <div class="row"><span>УФ-индекс</span><b>${uv.value} <i class="uvi-badge ${c}">${l}</i></b></div>
+  <div class="rows"><div class="row"><span>ОСО</span><b>${oz.value} е.Д.</b></div>
+  <div class="row"><span>УФ</span><b>${uv.value} <i class="uvi-badge ${c}">${l}</i></b></div>
   <div class="row"><span>УФ-макс</span><b>${mx.value}</b></div>
-  ${so ? `<div class="row"><span>ПСО</span><b>${so.value}</b></div>` : ""}</div>`;
+  ${so ? `<div class="row"><span>ПСО</span><b>${so.value}</b></div>` : ""}</div></div>`;
 }).join("");
 
 let city = "minsk", param = "total_ozone", days = 7, chart;
