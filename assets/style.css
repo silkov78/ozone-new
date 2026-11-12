@@ -306,3 +306,19 @@ button.chip{font-family:inherit;cursor:pointer;color:var(--ink)}
 .hero-side .side-link{margin-top:4px}
 .hero-note{margin-top:20px;padding-top:0;border-top:0;max-width:760px}
 .hero-side{gap:14px;padding:16px}.vseg button{padding:7px 12px}.hero-side .side-link{padding-top:12px}
+
+/* единый лид-текст с городами */
+.hero-lead{font-size:18px;line-height:1.7;color:#d6e6ef;max-width:820px;margin-top:12px}
+.hero-lead b{color:#fff}
+.city{display:inline-flex;align-items:center;gap:7px;font-weight:700;color:#fff;white-space:nowrap}
+.pulse{position:relative;width:8px;height:8px;border-radius:50%;background:#7fd6ff;box-shadow:0 0 10px #7fd6ff}
+.pulse::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid #7fd6ff;opacity:0;animation:pulse 2.4s ease-out infinite}
+.city:nth-child(2) .pulse::after{animation-delay:.8s}
+.city:nth-child(3) .pulse::after{animation-delay:1.6s}
+@keyframes pulse{0%{transform:scale(.4);opacity:.9}100%{transform:scale(1.8);opacity:0}}
+.city{display:inline;white-space:nowrap}
+.city .pulse{display:inline-block;vertical-align:middle;margin:-2px 7px 0 3px}
+
+.hero-stations{list-style:none;padding:0;display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.hero-stations li{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;padding:6px 14px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14)}
+.hero-stations i{width:7px;height:7px;border-radius:50%;background:var(--sky)}
