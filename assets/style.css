@@ -398,3 +398,28 @@ button.chip{font-family:inherit;cursor:pointer;color:var(--ink)}
 .dl-dates .field input{padding:8px 6px}
 .dl-btns .btn{padding:10px 12px;font-size:14px}
 .dl-card small{font-size:12px}
+
+/* ===== новости на главной: сетка 3:2 ===== */
+.nl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.thumb.r32{aspect-ratio:3/2}
+@media(max-width:860px){.nl-grid{grid-template-columns:1fr}}
+
+/* ===== наблюдения: правки ===== */
+#download + *, .glossary-row{}
+section.section-soft .info-grid{gap:20px}
+section.section-soft .info-grid .obs-card{padding:22px 24px}
+section.section-soft .info-grid .obs-card h3{font-size:18px;color:var(--ink);margin-bottom:8px}
+section.section-soft .info-grid .obs-card p{font-size:16px;line-height:1.55}
+section.section-soft h2{font-size:22px!important}
+.obs-main .big-chart .chart-box{min-height:280px}
+.obs-side .city-card .row{max-height:46px;padding:6px 0}
+#download{padding:16px 0!important}
+.obs-side{gap:12px}
+.obs-side .city-card{padding:14px 20px}
+.obs-side .city-card h3{font-size:20px;margin-top:2px}
+.obs-side .city-card .asof{margin:0 0 4px}
+.obs-side .city-card .row{max-height:40px;padding:4px 0}
+.obs-side .dl-card{padding:12px 18px;gap:8px}
+.obs-main .big-chart{padding:14px 22px}
+.obs-main .big-chart .chart-ctrl{margin-top:8px}
+.obs-main .big-chart .chart-box{min-height:240px}
