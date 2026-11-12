@@ -326,3 +326,8 @@ button.chip{font-family:inherit;cursor:pointer;color:var(--ink)}
 /* исходный hero: три станции */
 .today{grid-template-columns:repeat(3,1fr)}
 @media(max-width:860px){.today{grid-template-columns:1fr}}
+/* карточки наблюдений выше */
+.obs-cards .obs-card{padding:20px 22px}
+.obs-cards .obs-card h3{margin-bottom:10px}
+.obs-cards .obs-card .row{padding:10px 0;font-size:15px}
+.obs-cards .obs-card .row b{font-size:17px}
