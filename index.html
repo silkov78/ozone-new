@@ -8,10 +8,10 @@
 <link rel="apple-touch-icon" sizes="180x180" href="assets/img/brand/favicon-180.png">
 <link rel="manifest" href="assets/img/brand/site.webmanifest">
 <meta name="theme-color" content="#1e4356">
-<link rel="stylesheet" href="assets/style.css?v=6">
+<link rel="stylesheet" href="assets/style.css?v=7">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head><body>
-<div id="header"></div><script src="assets/layout.js?v=6"></script>
+<div id="header"></div><script src="assets/layout.js?v=7"></script>
 
 <section class="hero" id="hero"><div class="container">
   <h1>Озоновый слой и УФ-излучение над Беларусью</h1>
@@ -47,21 +47,28 @@ const st = [["minsk","Минск"],["homel","Гомель"],["naroch","Наро�
 const PU = { total_ozone: ["ОСО", "е.Д."], total_uvi: ["УФ-индекс", ""], max_uvi: ["УФ-макс", ""], surface_ozone: ["Приземный озон", "мг/м³"] };
 let hp = "total_uvi", hd = 30, sparks = [];
 function renderToday() {
-  const rows = OBS.slice(-hd), sts = st.filter(([k]) => (hp + "_" + k) in last);
   sparks.forEach(c => c.destroy()); sparks = [];
-  document.getElementById("today").innerHTML = sts.map(([k, n]) => {
-    const v = last[hp + "_" + k], vals = rows.map(o => o[hp + "_" + k]);
+  const card = ([k, n], main) => {
+    const lo = lastOf(hp + "_" + k); if (!lo) return "";
+    const rows = OBS.slice(0, lo.i + 1).slice(-hd), vals = rows.map(o => o[hp + "_" + k]).filter(v => v != null);
     const avg = (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(hp === "total_ozone" ? 0 : 2);
-    const badge = hp.includes("uvi") ? (([c, l]) => ` <i class="uvi-badge ${c}">${l}</i>`)(uviClass(v)) : "";
-    return `<div class="station"><h3>${n}</h3><div class="vals">
-      <div class="val"><b>${v}</b><span>${PU[hp][0]} ${PU[hp][1]}${badge}</span></div>
-      <div class="val"><b style="font-size:22px;opacity:.75">${avg}</b><span>среднее за ${hd} дн</span></div>
-    </div><div class="spark"><canvas id="sp-${k}"></canvas></div></div>`;
-  }).join("");
-  sts.forEach(([k]) => sparks.push(new Chart(document.getElementById("sp-" + k), {
-    type: "line", data: { labels: rows.map(o => o.date), datasets: [{ data: rows.map(o => o[hp + "_" + k]), borderColor: "#a2cce3", borderWidth: 2, pointRadius: 0, tension: .35, fill: { target: "origin" }, backgroundColor: "rgba(162,204,227,.12)" }] },
-    options: { responsive: true, maintainAspectRatio: false, animation: { duration: 300 }, plugins: { legend: { display: false }, tooltip: { enabled: true, displayColors: false } }, scales: { x: { display: false }, y: { display: false } } }
-  })));
+    const badge = hp.includes("uvi") ? (([c, l]) => ` <i class="uvi-badge ${c}">${l}</i>`)(uviClass(lo.value)) : "";
+    return `<div class="station ${main ? "main" : "mini"}"><h3>${n}<span class="asof">данные за ${shortDate(lo.date)}</span></h3><div class="vals">
+      <div class="val"><b>${lo.value}</b><span>${PU[hp][0]} ${PU[hp][1]}${badge}</span></div>
+      ${main ? `<div class="val"><b style="font-size:22px;opacity:.75">${avg}</b><span>среднее за ${hd} дн</span></div>` : ""}
+    </div>${main ? `<div class="spark"><canvas id="sp-${k}" data-from="${lo.i}"></canvas></div>` : ""}</div>`;
+  };
+  const others = st.slice(1).map(s => card(s, false)).join("");
+  document.getElementById("today").innerHTML = card(st[0], true) + (others ? `<div class="side">${others}</div>` : "");
+  document.getElementById("today").style.gridTemplateColumns = others ? "" : "1fr";
+  const rows = OBS.slice(-hd), key = hp + "_minsk";
+  sparks.push(new Chart(document.getElementById("sp-minsk"), {
+    type: "line", data: { labels: rows.map(o => o.date), datasets: [{ data: rows.map(o => o[key]), borderColor: "#a2cce3", borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: .35, fill: { target: "origin" }, backgroundColor: "rgba(162,204,227,.12)" }] },
+    options: { responsive: true, maintainAspectRatio: false, animation: { duration: 300 }, interaction: { mode: "index", intersect: false },
+      plugins: { legend: { display: false }, tooltip: { displayColors: false } },
+      scales: { x: { ticks: { color: "#a9c4d3", maxTicksLimit: 6, maxRotation: 0, callback: function (v) { return shortDate(this.getLabelForValue(v)); } }, grid: { display: false }, border: { display: false } },
+                y: { ticks: { color: "#a9c4d3", maxTicksLimit: 4 }, grid: { color: "rgba(255,255,255,.06)" }, border: { display: false } } } }
+  }));
 }
 document.querySelectorAll("#hp button").forEach(b => b.onclick = () => { hp = b.dataset.p; document.querySelectorAll("#hp button").forEach(x => x.classList.toggle("on", x === b)); renderToday(); });
 document.querySelectorAll("#hd button").forEach(b => b.onclick = () => { hd = +b.dataset.d; document.querySelectorAll("#hd button").forEach(x => x.classList.toggle("on", x === b)); renderToday(); });

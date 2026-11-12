@@ -245,3 +245,27 @@ button.chip{font-family:inherit;cursor:pointer;color:var(--ink)}
 
 .photo{border-radius:var(--radius);aspect-ratio:4/3;object-fit:cover;width:100%}
 @media(max-width:860px){.header.dark .nav{background:rgba(6,20,30,.95)}}
+
+/* big chart */
+.big-chart{padding:28px 32px}
+.chart-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:12px}
+.chart-head h2{margin:0;font-size:26px}
+.asof{font-size:13px;font-weight:600;color:var(--muted);margin-left:6px;letter-spacing:0}
+.big-chart .chart-box{height:min(560px,62vh)}
+.chart-ctrl{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:18px}
+.seg button:disabled{opacity:.35;cursor:not-allowed}
+.export{margin-top:24px;border-top:1px solid var(--line);padding-top:16px}
+.export summary{cursor:pointer;font-weight:700;color:var(--accent-2);list-style:none}
+.export summary::before{content:"⬇ "}
+.export .filters{margin:16px 0 0;align-items:center}
+@media(max-width:600px){.big-chart{padding:18px 14px}.big-chart .chart-box{height:380px}}
+
+/* hero: Минск крупно + остальные компактно */
+.today{grid-template-columns:2fr 1fr}
+.today .side{display:grid;gap:16px}
+.station.main .spark{height:150px;margin-top:18px}
+.station.mini{padding:16px 18px}
+.station.mini .val b{font-size:26px}
+.station .asof{color:#a9c4d3;margin:0;font-size:12px;font-weight:600}
+.station h3{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+@media(max-width:860px){.today{grid-template-columns:1fr}}

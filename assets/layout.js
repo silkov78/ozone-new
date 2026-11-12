@@ -62,6 +62,11 @@ function genObs(days = 365) {
   return out;
 }
 const OBS = genObs();
+// Гомель и Нарочь приходят с задержкой ~неделю
+OBS.slice(-7).forEach(o => ["homel", "naroch"].forEach(c => ["total_ozone", "total_uvi", "max_uvi"].forEach(p => o[p + "_" + c] = null)));
+// последнее непустое значение параметра
+const lastOf = key => { for (let i = OBS.length - 1; i >= 0; i--) if (OBS[i][key] != null) return { date: OBS[i].date, value: OBS[i][key], i }; return null; };
+const shortDate = s => new Date(s).toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
 const uviClass = v => v < 3 ? ["uvi-low", "низкий"] : v < 6 ? ["uvi-mod", "умеренный"] : ["uvi-high", "высокий"];
 const fmtDate = s => new Date(s).toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" });
 

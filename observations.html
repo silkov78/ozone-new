@@ -4,43 +4,42 @@
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/img/brand/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/brand/favicon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="assets/img/brand/favicon-16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/img/brand/favicon-180.png">
 <link rel="manifest" href="assets/img/brand/site.webmanifest">
-<meta name="theme-color" content="#1e4356">
-<link rel="stylesheet" href="assets/style.css?v=6">
+<link rel="stylesheet" href="assets/style.css?v=7">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head><body>
-<div id="header"></div><script src="assets/layout.js?v=6"></script>
+<div id="header"></div><script src="assets/layout.js?v=7"></script>
 
 <section style="padding-bottom:24px"><div class="container">
-  <span class="eyebrow" id="last-date"></span>
   <h1 style="margin:8px 0 24px">Наблюдения</h1>
   <div class="obs-cards" id="cards"></div>
 </div></section>
 
 <section style="padding-top:24px" id="download"><div class="container">
-  <div class="panel">
-    <div class="filters">
-      <label class="field">Параметр
-        <select id="param">
-          <option value="total_ozone">Общее содержание озона (ОСО)</option>
-          <option value="total_uvi">УФ-индекс</option>
-          <option value="max_uvi">УФ-индекс максимальный</option>
-          <option value="surface_ozone">Приземный озон</option>
-        </select></label>
-      <label class="field">С<input type="date" id="from"></label>
-      <label class="field">По<input type="date" id="to"></label>
-      <div class="field">Период<div class="seg" id="range">
-        <button data-d="30">30 дн</button><button data-d="90" class="on">90 дн</button><button data-d="365">Год</button></div></div>
-      <div class="download">
-        <button class="btn btn-primary" onclick="downloadCSV(OBS.filter(r => r.date >= $('from').value && r.date <= $('to').value))">⬇ CSV</button>
-        <a class="btn btn-ghost" href="#">⬇ XLSX</a>
-      </div>
+  <div class="panel big-chart">
+    <div class="chart-head">
+      <h2 id="chart-title"></h2>
+      <div class="seg" id="city"><button data-c="minsk" class="on">Минск</button><button data-c="homel">Гомель</button><button data-c="naroch">Нарочь</button></div>
     </div>
     <div class="chart-box"><canvas id="chart"></canvas></div>
+    <div class="chart-ctrl">
+      <div class="seg" id="param">
+        <button data-p="total_ozone" class="on">ОСО</button><button data-p="surface_ozone">ПСО</button><button data-p="total_uvi">УФ-индекс</button><button data-p="max_uvi">УФ-макс</button></div>
+      <div class="seg" id="range">
+        <button data-d="7" class="on">Неделя</button><button data-d="30">Месяц</button><button data-d="365">Год</button><button data-d="0">Всё время</button></div>
+    </div>
+    <details class="export">
+      <summary>Скачать данные</summary>
+      <div class="filters">
+        <label class="field">С<input type="date" id="from"></label>
+        <label class="field">По<input type="date" id="to"></label>
+        <button class="btn btn-primary" id="csv">⬇ CSV</button>
+        <a class="btn btn-ghost" href="#">⬇ XLSX</a>
+        <span class="muted" style="font-size:14px">Все пункты и параметры за период</span>
+      </div>
+    </details>
   </div>
-
 </div></section>
 
 <section class="section-soft"><div class="container">
@@ -49,47 +48,59 @@
     <div class="obs-card"><h3>ОСО</h3><p>Общее содержание озона в столбе атмосферы, в единицах Добсона (е.Д.). Норма для Беларуси — 300–380 е.Д.</p></div>
     <div class="obs-card"><h3>УФ-индекс</h3><p>Среднедневной индекс ультрафиолетового излучения. 0–2 низкий, 3–5 умеренный, 6+ высокий.</p></div>
     <div class="obs-card"><h3>УФ-макс</h3><p>Максимальное за день значение УФ-индекса, обычно около полудня.</p></div>
-    <div class="obs-card"><h3>Приземный озон</h3><p>Концентрация озона у поверхности земли (только Минск).</p></div>
+    <div class="obs-card"><h3>ПСО</h3><p>Приземный озон — концентрация озона у поверхности земли (только Минск).</p></div>
   </div>
 </div></section>
 
 <div id="footer"></div>
 <script>
-const CITIES = [["minsk","Минск","#1e4356"],["homel","Гомель","#0091c2"],["naroch","Нарочь","#68a4c4"]];
-const last = OBS[OBS.length-1];
-document.getElementById("last-date").textContent = "Последнее обновление: " + fmtDate(last.date);
-document.getElementById("cards").innerHTML = CITIES.map(([k,n]) => {
-  const [c,l] = uviClass(last["total_uvi_"+k]);
-  return `<div class="obs-card"><h3>${n}</h3>
-  <div class="row"><span>ОСО</span><b>${last["total_ozone_"+k]} е.Д.</b></div>
-  <div class="row"><span>УФ-индекс</span><b>${last["total_uvi_"+k]} <i class="uvi-badge ${c}">${l}</i></b></div>
-  <div class="row"><span>УФ-макс</span><b>${last["max_uvi_"+k]}</b></div>
-  ${k==="minsk" ? `<div class="row"><span>Приземный озон</span><b>${last.surface_ozone_minsk}</b></div>` : ""}</div>`;
+const $ = id => document.getElementById(id);
+const CITY = { minsk: "Минску", homel: "Гомелю", naroch: "Нарочи" };
+const NAMES = { minsk: "Минск", homel: "Гомель", naroch: "Нарочь" };
+const PARAM = { total_ozone: "ОСО (е.Д.)", surface_ozone: "ПСО", total_uvi: "УФ-индекс", max_uvi: "УФ-макс" };
+
+// карточки: у каждого пункта своя дата последних данных
+$("cards").innerHTML = Object.keys(NAMES).map(k => {
+  const oz = lastOf("total_ozone_" + k), uv = lastOf("total_uvi_" + k), mx = lastOf("max_uvi_" + k), so = lastOf("surface_ozone_" + k);
+  const [c, l] = uviClass(uv.value);
+  return `<div class="obs-card"><h3>${NAMES[k]} <span class="asof">данные за ${shortDate(oz.date)}</span></h3>
+  <div class="row"><span>ОСО</span><b>${oz.value} е.Д.</b></div>
+  <div class="row"><span>УФ-индекс</span><b>${uv.value} <i class="uvi-badge ${c}">${l}</i></b></div>
+  <div class="row"><span>УФ-макс</span><b>${mx.value}</b></div>
+  ${so ? `<div class="row"><span>ПСО</span><b>${so.value}</b></div>` : ""}</div>`;
 }).join("");
 
-const $ = id => document.getElementById(id);
-let chart, hidden = { homel: true, naroch: true };
+let city = "minsk", param = "total_ozone", days = 7, chart;
+const seg = (id, fn) => document.querySelectorAll(`#${id} button`).forEach(b => b.onclick = () => {
+  if (b.disabled) return;
+  document.querySelectorAll(`#${id} button`).forEach(x => x.classList.toggle("on", x === b)); fn(b.dataset); render();
+});
+seg("city", d => city = d.c);
+seg("param", d => param = d.p);
+seg("range", d => days = +d.d);
+
 function render() {
-  const p = $("param").value, from = $("from").value, to = $("to").value;
-  const rows = OBS.filter(o => o.date >= from && o.date <= to);
-  const cities = CITIES.filter(([k]) => (p+"_"+k) in rows[0]);
-  const ds = cities.map(([k,n,c]) => ({label:n, data:rows.map(o=>o[p+"_"+k]), borderColor:c, backgroundColor:c, borderWidth:2, pointRadius:0, tension:.25, hidden: !!hidden[k], key:k}));
-  if (chart) chart.data.datasets.forEach((d, i) => hidden[d.key] = !chart.isDatasetVisible(i));
+  // ПСО есть только у Минска
+  document.querySelector('#param [data-p="surface_ozone"]').disabled = city !== "minsk";
+  if (city !== "minsk" && param === "surface_ozone") { param = "total_ozone"; document.querySelectorAll("#param button").forEach(x => x.classList.toggle("on", x.dataset.p === param)); }
+  const key = param + "_" + city, lo = lastOf(key);
+  // период отсчитываем от последней даты, за которую у пункта есть данные
+  const rows = OBS.slice(0, lo.i + 1).slice(days ? -days : 0);
+  $("chart-title").innerHTML = `Измерения по ${CITY[city]} <span class="asof">по ${shortDate(lo.date)}</span>`;
   chart?.destroy();
-  chart = new Chart($("chart"), {type:"line", data:{labels:rows.map(o=>o.date), datasets:ds},
-    options:{responsive:true, maintainAspectRatio:false, interaction:{mode:"index",intersect:false},
-      plugins:{legend:{position:"top",align:"end",labels:{usePointStyle:true,boxWidth:8}}},
-      scales:{x:{grid:{display:false},ticks:{maxTicksLimit:8}}, y:{grid:{color:"#e3edf2"}}}}});
+  chart = new Chart($("chart"), {
+    type: "line",
+    data: { labels: rows.map(o => o.date), datasets: [{ label: PARAM[param], data: rows.map(o => o[key]),
+      borderColor: "#0091c2", backgroundColor: "rgba(0,145,194,.08)", fill: true, borderWidth: 2.5, tension: .4, spanGaps: true,
+      pointRadius: rows.length <= 31 ? 4 : 0, pointHoverRadius: 6, pointBackgroundColor: "#0091c2" }] },
+    options: { responsive: true, maintainAspectRatio: false, interaction: { mode: "index", intersect: false },
+      plugins: { legend: { display: false }, tooltip: { padding: 10, titleFont: { size: 14 }, bodyFont: { size: 14 } } },
+      scales: { x: { grid: { color: "#eef3f6" }, ticks: { font: { size: 13 }, maxTicksLimit: 10, maxRotation: 0 } },
+                y: { grid: { color: "#eef3f6" }, ticks: { font: { size: 13 } } } } }
+  });
 }
-function setRange(d) {
-  $("to").value = last.date;
-  const f = new Date(last.date); f.setDate(f.getDate() - d + 1);
-  $("from").value = f.toISOString().slice(0,10);
-  document.querySelectorAll("#range button").forEach(b => b.classList.toggle("on", +b.dataset.d === d));
-  render();
-}
-document.querySelectorAll("#range button").forEach(b => b.onclick = () => setRange(+b.dataset.d));
-["param","from","to"].forEach(id => $(id).onchange = render);
-setRange(90);
+$("to").value = OBS[OBS.length - 1].date; $("from").value = OBS[OBS.length - 30].date;
+$("csv").onclick = () => downloadCSV(OBS.filter(r => r.date >= $("from").value && r.date <= $("to").value));
+render();
 </script>
 </body></html>
